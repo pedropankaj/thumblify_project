@@ -9,12 +9,22 @@ import ThumbnailRouter from "./routes/ThumbnailRoutes.js";
 import UserRouter from "./routes/UserRoutes.js";
 await connectDB();
 const app = express();
+const allowedOrigins = (process.env.CORS_ORIGINS || "")
+    .split(",")
+    .map((origin) => origin.trim())
+    .filter(Boolean);
+const defaultAllowedOrigins = ["http://localhost:5173", "http://localhost:3000"];
+const vercelPreviewRegex = /^https:\/\/thumblify-client.*\.vercel\.app$/;
 app.use(cors({
-    origin: [
-        "http://localhost:5173",
-        "http://localhost:3000",
-        "https://thumblify-client-sage.vercel.app",
-    ],
+    origin: (origin, callback) => {
+        if (!origin)
+            return callback(null, true);
+        const isAllowed = [...defaultAllowedOrigins, ...allowedOrigins].includes(origin) ||
+            vercelPreviewRegex.test(origin);
+        if (isAllowed)
+            return callback(null, true);
+        return callback(new Error("Not allowed by CORS"));
+    },
     credentials: true,
 }));
 app.set("trust proxy", 1);
@@ -41,7 +51,8 @@ app.get("/", (req, res) => {
 app.use("/api/auth", AuthRouter);
 app.use("/api/thumbnail", ThumbnailRouter);
 app.use("/api/user", UserRouter);
-const port = process.env.PORT || 3000;
-app.listen(port, () => {
-    console.log(`Server is running at http://localhost:${port}`);
-});
+// const port = process.env.PORT || 3000;
+// app.listen(port, () => {
+//   console.log(`Server is running at http://localhost:${port}`);
+// });
+export default app;
