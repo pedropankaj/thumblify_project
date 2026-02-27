@@ -3,10 +3,12 @@ import { useState } from 'react';
 import SoftBackdrop from './SoftBackdrop';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { Eye, EyeOff } from 'lucide-react';
 
 const Login = () => {
     const [state, setState] = useState('login');
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
     const [showForgotPassword, setShowForgotPassword] = useState(false);
     const [forgotData, setForgotData] = useState({
         email: '',
@@ -138,12 +140,20 @@ const Login = () => {
                             <input type='email' name='email' placeholder='Email id' className='w-full bg-transparent text-white placeholder-white/60 border-none outline-none ' value={formData.email} onChange={handleChange} required />
                         </div>
 
-                        <div className=' flex items-center mt-4 w-full bg-white/5 ring-2 ring-white/10 focus-within:ring-pink-500/60 h-12 rounded-full overflow-hidden pl-6 gap-2 transition-all '>
+                        <div className=' flex items-center mt-4 w-full bg-white/5 ring-2 ring-white/10 focus-within:ring-pink-500/60 h-12 rounded-full overflow-hidden pl-6 pr-4 gap-2 transition-all '>
                             <svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='currentColor' className='text-white/75' strokeWidth='2' strokeLinecap='round' strokeLinejoin='round'>
                                 {' '}
                                 <rect width='18' height='11' x='3' y='11' rx='2' ry='2' /> <path d='M7 11V7a5 5 0 0 1 10 0v4' />{' '}
                             </svg>
-                            <input type='password' name='password' placeholder='Password' className='w-full bg-transparent text-white placeholder-white/60 border-none outline-none' value={formData.password} onChange={handleChange} required />
+                            <input type={showPassword ? 'text' : 'password'} name='password' placeholder='Password' className='w-full bg-transparent text-white placeholder-white/60 border-none outline-none' value={formData.password} onChange={handleChange} required />
+                            <button
+                                type='button'
+                                onClick={() => setShowPassword((prev) => !prev)}
+                                className='text-white/70 hover:text-white transition'
+                                aria-label={showPassword ? 'Hide password' : 'Show password'}
+                            >
+                                {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                            </button>
                         </div>
 
                         <div className='mt-4 text-left'>

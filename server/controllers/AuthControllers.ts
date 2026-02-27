@@ -51,7 +51,7 @@ export const loginUser = async (req: Request, res: Response) => {
         }
         const isPasswordCorrect = await bcrypt.compare(password, user.password);
         if (!isPasswordCorrect) {
-            return res.status(400).json({ message: 'Invalid email or password' });
+            return res.status(400).json({ message: 'Password is wrong' });
         }
 
         // setting user data in session
